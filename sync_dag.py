@@ -16,7 +16,7 @@ with DAG(
     push_from_master = BashOperator(
         task_id='push_from_master',
         bash_command="""
-        echo "Master (Ubuntu) đang chuẩn bị đẩy code..." && sleep 10 && \
+        echo "Master (Ubuntu) đang chuẩn bị đẩy code..." && sleep 5 && \
         cd /opt/airflow/dags || exit 1; \
         # Sử dụng cấu hình local thay vì global
         git config user.email "pewpewls09@example.com" && \
@@ -35,7 +35,7 @@ with DAG(
     pull_to_worker = BashOperator(
         task_id='pull_to_worker_centos',
         bash_command="""
-        echo "Worker (CentOS) đang kéo code mới..." && sleep 10 && \
+        echo "Worker (CentOS) đang kéo code mới..." && sleep 5 && \
         cd /opt/airflow/dags || exit 1; \
         
         # Xóa các file lock nếu có để tránh kẹt
