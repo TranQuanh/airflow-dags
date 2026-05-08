@@ -37,17 +37,20 @@ with DAG(
         bash_command="""
         echo "Worker (CentOS) đang kéo code mới..." && sleep 10 && \
         cd /opt/airflow/dags || exit 1; \
-        # Khai báo an toàn cho thư mục git
+        
+        # Xóa các file lock nếu có để tránh kẹt
+        rm -f .git/index.lock .git/FETCH_HEAD.lock || true;
+
         git config --global --add safe.directory /opt/airflow/dags && \
-        # Đồng bộ lại giờ nếu có thể (tránh lỗi SSL/Token khi fetch)
-        # git fetch --all
+        
+        # Thêm identity cho chắc chắn
+        git config user.email "pewpewls09@example.com" && \
+        git config user.name "Tran Quang Anh" && \
+        
         git fetch origin main && \
-        # Ép code về giống hệt bản trên Git, xóa bỏ mọi thay đổi cục bộ
-        git reset --hard origin/main && \
-        # Quan trọng: Trả lại quyền sở hữu cho user airflow sau khi pull
-        chown -R 50000:0 /opt/airflow/dags
+        git reset --hard origin/main
         """,
-        queue='worker_centos' # <--- Máy CentOS nhận
+        queue='worker_centos'
     )
 
     push_from_master >> pull_to_worker
