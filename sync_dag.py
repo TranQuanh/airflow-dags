@@ -20,6 +20,7 @@ with DAG(
         git commit -m "Code updated from Master at $(date)" || echo "No changes" && \
         git push origin main
         """,
+        queue='worker_centos'
         # Không cần để queue, mặc định Scheduler sẽ xử lý hoặc đẩy vào default queue
     )
 
