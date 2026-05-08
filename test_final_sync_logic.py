@@ -3,7 +3,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 import socket
 import os
-# test 1 chut
+# test 1 chut nua
 def check_worker_environment():
     print("="*30)
     print("KẾT QUẢ KIỂM TRA ĐỒNG BỘ")
