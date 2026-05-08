@@ -17,13 +17,13 @@ with DAG(
         task_id='push_from_master',
         bash_command="""
         echo "Master (Ubuntu) đang chuẩn bị đẩy code..." && sleep 10 && \
-        cd /opt/airflow/dags && \
+        cd /opt/airflow/dags || exit 1; \
         git config --global --add safe.directory /opt/airflow/dags && \
         git add . && \
-        git commit -m "Sync from Master at $(date)" || echo "Nothing to commit" && \
+        git commit -m "Sync from Master at $(date)" || echo "Nothing to commit"; \
         git push origin main
         """,
-        queue='default' # <--- Máy Ubuntu nhận
+        queue='default'
     )
 
     # BƯỚC 2: CHẠY TRÊN CENTOS (Worker)
