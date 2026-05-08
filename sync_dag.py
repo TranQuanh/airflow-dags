@@ -48,6 +48,7 @@ with DAG(
         git config user.name "Tran Quang Anh" && \
         
         git fetch origin main && \
+        git clean -fd && \
         git reset --hard origin/main
         """,
         queue='worker_centos'
