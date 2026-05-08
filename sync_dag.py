@@ -18,9 +18,13 @@ with DAG(
         bash_command="""
         echo "Master (Ubuntu) đang chuẩn bị đẩy code..." && sleep 10 && \
         cd /opt/airflow/dags || exit 1; \
-        git config --global --add safe.directory /opt/airflow/dags && \
+        # Sử dụng cấu hình local thay vì global
+        git config user.email "pewpewls09@example.com" && \
+        git config user.name "Tran Quang Anh" && \
+        git config --add safe.directory /opt/airflow/dags && \
         git add . && \
-        git commit -m "Sync from Master at $(date)" || echo "Nothing to commit"; \
+        # Nếu vẫn báo lỗi identity, ép thông tin trực tiếp vào lệnh commit
+        git commit -m "Sync from Master at $(date)" --author="Tran Quang Anh <pewpewls09@example.com>" || echo "Nothing to commit"; \
         git push origin main
         """,
         queue='default'
@@ -32,10 +36,15 @@ with DAG(
         task_id='pull_to_worker_centos',
         bash_command="""
         echo "Worker (CentOS) đang kéo code mới..." && sleep 10 && \
-        cd /opt/airflow/dags && \
+        cd /opt/airflow/dags || exit 1; \
+        # Khai báo an toàn cho thư mục git
         git config --global --add safe.directory /opt/airflow/dags && \
-        git fetch --all && \
+        # Đồng bộ lại giờ nếu có thể (tránh lỗi SSL/Token khi fetch)
+        # git fetch --all
+        git fetch origin main && \
+        # Ép code về giống hệt bản trên Git, xóa bỏ mọi thay đổi cục bộ
         git reset --hard origin/main && \
+        # Quan trọng: Trả lại quyền sở hữu cho user airflow sau khi pull
         chown -R 50000:0 /opt/airflow/dags
         """,
         queue='worker_centos' # <--- Máy CentOS nhận
