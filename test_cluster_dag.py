@@ -2,7 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 import socket
-
+# commit
 def print_info():
     hostname = socket.gethostname()
     print(f"--- THÔNG TIN THỰC THI ---")
